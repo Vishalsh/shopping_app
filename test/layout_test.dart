@@ -7,14 +7,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:shopping_app/layout.dart';
+import 'package:shopping_app/pages/home/home.dart';
 
 void main() {
   testWidgets('should render catalog in layout by default',
       (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MaterialApp(
-      home: Layout(),
+      home: Home(),
     ));
 
     expect(find.text("I am in Catalog Page"), findsOneWidget);
@@ -27,7 +27,7 @@ void main() {
       (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MaterialApp(
-      home: Layout(),
+      home: Home(),
     ));
 
     await tester.tap(find.byIcon(Icons.shopping_cart));
@@ -43,7 +43,7 @@ void main() {
       (WidgetTester tester) async {
     // Build our app and trigger a frame.
     await tester.pumpWidget(const MaterialApp(
-      home: Layout(),
+      home: Home(),
     ));
 
     await tester.tap(find.byIcon(Icons.monitor_heart_rounded));
