@@ -1,56 +1,51 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'package:shopping_app/layout.dart';
+import 'package:shopping_app/pages/account.dart';
 import 'package:shopping_app/pages/home/home.dart';
 
+import 'layout_test.mocks.dart';
+
+class DummyWidget extends StatelessWidget {
+  const DummyWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
+@GenerateMocks([NavigatorState])
 void main() {
-  testWidgets('should render catalog in layout by default',
+  testWidgets('should navigate to Home page on tap of home in the side drawer',
       (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MaterialApp(
-      home: Home(),
+    final mockNavigatorState = MockNavigatorState();
+    var materialPageRoute = MaterialPageRoute(
+      builder: (context) => const Home(),
+    );
+    when(mockNavigatorState.push(any))
+        .thenAnswer((_) async => materialPageRoute);
+
+    await tester.pumpWidget(MaterialApp(
+      home: Layout(
+        navigatorState: mockNavigatorState,
+        child: const DummyWidget(),
+      ),
     ));
 
-    expect(find.text("I am in Catalog Page"), findsOneWidget);
-    expect(find.text("I am in Cart Page"), findsNothing);
-    expect(find.text("I am in Wishlist Page"), findsNothing);
-  });
+    final ScaffoldState state =
+        tester.firstState(find.byKey(const Key('app-scaffold')));
 
-  testWidgets(
-      'should render cart widget on tap of cart icon in bottom navigation',
-      (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MaterialApp(
-      home: Home(),
-    ));
+    state.openDrawer();
 
-    await tester.tap(find.byIcon(Icons.shopping_cart));
-    await tester.pump();
+    await tester.pumpAndSettle();
 
-    expect(find.text("I am in Cart Page"), findsOneWidget);
-    expect(find.text("I am in Wishlist Page"), findsNothing);
-    expect(find.text("I am in Catalog Page"), findsNothing);
-  });
+    await tester.tap(find.text("Home"));
 
-  testWidgets(
-      'should render wishlist widget on tap of wishlist icon in bottom navigation',
-      (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MaterialApp(
-      home: Home(),
-    ));
+    await tester.pumpAndSettle();
 
-    await tester.tap(find.byIcon(Icons.monitor_heart_rounded));
-    await tester.pump();
-
-    expect(find.text("I am in Wishlist Page"), findsOneWidget);
-    expect(find.text("I am in Cart Page"), findsNothing);
-    expect(find.text("I am in Catalog Page"), findsNothing);
+    verify(mockNavigatorState.push(any));
   });
 }

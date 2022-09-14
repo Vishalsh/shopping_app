@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:shopping_app/pages/account.dart';
+import 'package:shopping_app/pages/home/home.dart';
+import 'package:shopping_app/pages/orders.dart';
+import 'package:shopping_app/pages/settings.dart';
 
 class SideDrawer extends StatelessWidget {
-  const SideDrawer({super.key});
+  final NavigatorState navigatorState;
+
+  const SideDrawer({
+    super.key,
+    required this.navigatorState,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,25 +31,41 @@ class SideDrawer extends StatelessWidget {
           ListTile(
             title: const Text("Home"),
             onTap: () {
-              Navigator.pushNamed(context, '/');
+              navigatorState.push(
+                MaterialPageRoute(
+                  builder: (context) => const Home(),
+                ),
+              );
             },
           ),
           ListTile(
             title: const Text("Account"),
             onTap: () {
-              Navigator.pushNamed(context, '/account');
+              navigatorState.push(
+                MaterialPageRoute(
+                  builder: (context) => const Account(),
+                ),
+              );
             },
           ),
           ListTile(
             title: const Text("Orders"),
             onTap: () {
-              Navigator.pushNamed(context, '/orders');
+              navigatorState.push(
+                MaterialPageRoute(
+                  builder: (context) => const Orders(),
+                ),
+              );
             },
           ),
           ListTile(
             title: const Text("Settings"),
             onTap: () {
-              Navigator.pushNamed(context, '/settings');
+              navigatorState.push(
+                MaterialPageRoute(
+                  builder: (context) => const Settings(),
+                ),
+              );
             },
           ),
           Expanded(
@@ -59,7 +84,12 @@ class SideDrawer extends StatelessWidget {
 class Layout extends StatefulWidget {
   final Widget child;
   final Widget? bottomNavigationBar;
-  const Layout({super.key, required this.child, this.bottomNavigationBar});
+  final NavigatorState? navigatorState;
+  const Layout(
+      {super.key,
+      required this.child,
+      this.bottomNavigationBar,
+      this.navigatorState});
 
   @override
   State<Layout> createState() => _LayoutState();
@@ -71,7 +101,10 @@ class _LayoutState extends State<Layout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const SideDrawer(),
+      key: const Key('app-scaffold'),
+      drawer: SideDrawer(
+        navigatorState: widget.navigatorState ?? Navigator.of(context),
+      ),
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         backgroundColor: Colors.grey.shade100,
@@ -79,8 +112,7 @@ class _LayoutState extends State<Layout> {
         title: const Text("Shopping App"),
       ),
       body: widget.child,
-      bottomNavigationBar:
-          widget.bottomNavigationBar ?? null,
+      bottomNavigationBar: widget.bottomNavigationBar ?? null,
     );
   }
 }
