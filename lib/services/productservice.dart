@@ -1,4 +1,5 @@
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ProductService {
   final String url =
@@ -8,6 +9,7 @@ class ProductService {
   ProductService({required this.client});
 
   Future<dynamic> getAll() async {
-    await client.get(Uri.parse(url));
+    http.Response response = await client.get(Uri.parse(url));
+    return jsonDecode(response.body);
   }
 }

@@ -1,9 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:shopping_app/services/productservice.dart';
+import 'package:shopping_app/services/ProductService.dart';
 import 'package:http/http.dart' as http;
-import 'productservice_test.mocks.dart';
+import 'ProductService_test.mocks.dart';
 
 @GenerateMocks([http.Client])
 void main() {
@@ -19,6 +21,18 @@ void main() {
       await productService.getAll();
       verify(mockClient.get(Uri.parse(
           'https://e-commerce-microfrontends-apis.herokuapp.com/products')));
+    });
+
+    test('should return products json', () async {
+      final mockClient = MockClient();
+      var productService = ProductService(client: mockClient);
+      when(mockClient.get(Uri.parse(
+              'https://e-commerce-microfrontends-apis.herokuapp.com/products')))
+          .thenAnswer((_) async =>
+              http.Response('{"userId": 1, "id": 2, "title": "mock"}', 200));
+
+      var products = await productService.getAll();
+      expect(products, {"userId": 1, "id": 2, "title": "mock"});
     });
   });
 }
