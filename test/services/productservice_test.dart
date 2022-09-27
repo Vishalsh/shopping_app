@@ -16,7 +16,7 @@ void main() {
       when(mockClient.get(Uri.parse(
               'https://e-commerce-microfrontends-apis.herokuapp.com/products')))
           .thenAnswer((_) async =>
-              http.Response('{"userId": 1, "id": 2, "title": "mock"}', 200));
+              http.Response('[{"userId": 1, "id": 2, "title": "mock"}]', 200));
 
       await productService.getAll();
       verify(mockClient.get(Uri.parse(
@@ -29,10 +29,12 @@ void main() {
       when(mockClient.get(Uri.parse(
               'https://e-commerce-microfrontends-apis.herokuapp.com/products')))
           .thenAnswer((_) async =>
-              http.Response('{"userId": 1, "id": 2, "title": "mock"}', 200));
+              http.Response('[{"userId": 1, "id": 2, "title": "mock"}]', 200));
 
       var products = await productService.getAll();
-      expect(products, {"userId": 1, "id": 2, "title": "mock"});
+      expect(products, [
+        {"userId": 1, "id": 2, "title": "mock"}
+      ]);
     });
   });
 }

@@ -8,8 +8,8 @@ class ProductService {
 
   ProductService({required this.client});
 
-  Future<dynamic> getAll() async {
+  Future<List<dynamic>> getAll() async {
     http.Response response = await client.get(Uri.parse(url));
-    return jsonDecode(response.body);
+    return json.decode(response.body);
   }
 }
